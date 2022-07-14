@@ -1,22 +1,21 @@
-from aiogram import Bot, Dispatcher, executor, types
-from config import API_TOKEN
-
-
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
-
+from aiogram.utils import executor
+from aiogram import types
+from handlers import user
+from create_bot import dp
 
 async def set_commands(dp):
     await dp.bot.set_my_commands([
         types.BotCommand(command="/start", description="Начать"),
         types.BotCommand(command="/help", description="Помощь"),
-        types.BotCommand(command="/info", description="Информация")
+        types.BotCommand(command="/info", description="Информация"),
+        types.BotCommand(command="/Искать_запчасти", description="Поиск запчастей"),
+        types.BotCommand(command="/Искать_ремонты", description="Поиск ремонтов")
     ])
 
+async def on_startup(_):
+    print('BOT online')
 
-
-
+user.register_handlers_user(dp)
 
 if __name__ == '__main__':
-    from handlers import dp
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
