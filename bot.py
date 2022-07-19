@@ -8,8 +8,8 @@ async def set_commands(dp):
         types.BotCommand(command="/start", description="Начать"),
         types.BotCommand(command="/help", description="Помощь"),
         types.BotCommand(command="/info", description="Информация"),
-        types.BotCommand(command="/Искать_запчасти", description="Поиск запчастей"),
-        types.BotCommand(command="/Искать_ремонты", description="Поиск ремонтов")
+        types.BotCommand(command="/Запчасти", description="Поиск запчастей"),
+        types.BotCommand(command="/Ремонты", description="Поиск ремонтов")
     ])
 
 async def on_startup(_):
