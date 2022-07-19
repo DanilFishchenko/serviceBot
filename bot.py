@@ -3,17 +3,18 @@ from aiogram import types
 from handlers import user
 from create_bot import dp
 
-async def set_commands(dp):
-    await dp.bot.set_my_commands([
-        types.BotCommand(command="/start", description="Начать"),
-        types.BotCommand(command="/help", description="Помощь"),
-        types.BotCommand(command="/info", description="Информация"),
-        types.BotCommand(command="/Запчасти", description="Поиск запчастей"),
-        types.BotCommand(command="/Ремонты", description="Поиск ремонтов")
-    ])
+
+# async def set_commands(dp):
+#     await dp.bot.set_my_commands([
+#         types.BotCommand(command="/help", description="Помощь"),
+#         types.BotCommand(command="Запчасти", description="Поиск запчастей"),
+#         types.BotCommand(command="Ремонты", description="Поиск ремонтов")
+#     ])
+
 
 async def on_startup(_):
     print('BOT online')
+
 
 user.register_handlers_user(dp)
 
