@@ -1,1 +1,1 @@
-from keyboards.user_kb import user_kb, kb_cancel, inl_kb
+from keyboards.user_kb import user_kb, kb_cancel

@@ -18,11 +18,11 @@ def sp_query(message_text: str):
         model = message_text
         cursor = cnx.cursor()
         sql_big_select = ('SET SQL_BIG_SELECTS = 1')
-        query = ('SELECT tb_stock.sp_id, tb_stock.partno, tb_stock.partname, tb_stock.brand, tb_stock.qty, '
-                 'tb_models.model, tb_rate.rate, tb_price.price FROM tb_stock LEFT JOIN tb_models ON tb_stock.sp_id = '
-                 'tb_models.sp_id LEFT JOIN tb_rate ON tb_stock.sp_id = tb_rate.sp_id LEFT JOIN tb_price ON '
-                 f'tb_stock.sp_id = tb_price.sp_id WHERE tb_models.model LIKE "%{model}%" GROUP BY tb_stock.sp_id ORDER BY '
-                 'tb_rate.rate ASC')
+        query = (f'SELECT tb_models.sp_id, tb_models.model, tb_models.partno, tb_models.partname, tb_models.brand, '
+                 f'tb_stock.qty, tb_rate.rate, tb_price.price FROM tb_models LEFT JOIN tb_stock ON tb_models.sp_id = '
+                 f'tb_stock.sp_id LEFT JOIN tb_rate ON tb_models.sp_id = tb_rate.sp_id LEFT JOIN tb_price ON '
+                 f'tb_models.sp_id = tb_price.sp_id WHERE tb_models.model LIKE "%{model}%" GROUP BY tb_models.sp_id '
+                 f'ORDER BY tb_rate.rate ASC')
         cursor.execute(sql_big_select)
         cursor.execute(query)
         result = cursor.fetchall()
