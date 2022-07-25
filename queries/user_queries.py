@@ -3,8 +3,8 @@ from mysql.connector import errorcode, CMySQLConnection, MySQLConnection
 from config import sqlconfig
 
 
-def sp_query(message_text: str):
-    print(f'Запрос по {message_text}')
+def sp_query(model: str):
+    print(f'Запрос по {model}')
     try:
         cnx = mysql.connector.connect(**sqlconfig)
     except mysql.connector.Error as err:
@@ -15,7 +15,6 @@ def sp_query(message_text: str):
         else:
             print(err)
     else:
-        model = message_text
         cursor = cnx.cursor()
         sql_big_select = ('SET SQL_BIG_SELECTS = 1')
         query = (f'SELECT tb_models.sp_id, tb_models.model, tb_models.partno, tb_models.partname, tb_models.brand, '
