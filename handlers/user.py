@@ -2,7 +2,7 @@ from create_bot import dp, bot
 from aiogram import types, Dispatcher
 from keyboards import user_kb, kb_cancel
 from aiogram.types import ReplyKeyboardRemove
-from queries.user_queries import sp_query
+from queries.user_queries import sp_query, short_model_query
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
@@ -37,36 +37,38 @@ async def search_parts(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['model'] = message.text
     if len(data['model']) <= 2:
-        await message.answer('Слишком короткий запрос. Введите модель ("Отмена" для возврата)')
-    else:
-        sp_found = sp_query(data['model'])
-        if not sp_found:
-            await message.answer('Ничего не найдено. Введите модель ("Отмена" для возврата)', reply_markup=kb_cancel)
+        print(short_model_query())
+        if data['model'] not in short_model_query():
+                await message.answer('Слишком короткий запрос. Введите модель ("Отмена" для возврата)')
         else:
-            for row in sp_found:
-                if row[5] == None:
-                    stock = '0'
-                else:
-                    stock = row[5]
-                sp_info = f'<b>{row[2]}</b> {row[3]}\n<i>{row[0]}</i>\nЦена: <b>{row[7]}</b> р.\nНа складе: <i>{stock}</i>'
-                # print(sp_info)
-                try:
-                    photo = open(f'//srvfsz/z/Фотографии запчастей/500x500/{row[0]}.jpg', "rb")
-                    await bot.send_photo(message.from_user.id, photo, caption=sp_info, parse_mode=types.ParseMode.HTML)
-                except:
-                    await bot.send_message(message.from_user.id, sp_info, parse_mode=types.ParseMode.HTML)
+            sp_found = sp_query(data['model'], short_model_query())
+            if not sp_found:
+                await message.answer('Ничего не найдено. Введите модель ("Отмена" для возврата)', reply_markup=kb_cancel)
+            else:
+                for row in sp_found:
+                    if row[5] == None:
+                        stock = '0'
+                    else:
+                        stock = row[5]
+                    sp_info = f'<b>{row[2]}</b> {row[3]}\n<i>{row[0]}</i>\nЦена: <b>{row[7]}</b> р.\nНа складе: <i>{stock}</i>'
+                    # print(sp_info)
+                    try:
+                        photo = open(f'//srvfsz/z/Фотографии запчастей/500x500/{row[0]}.jpg', "rb")
+                        await bot.send_photo(message.from_user.id, photo, caption=sp_info, parse_mode=types.ParseMode.HTML)
+                    except:
+                        await bot.send_message(message.from_user.id, sp_info, parse_mode=types.ParseMode.HTML)
 
-            def skl(qty):
-                ending1 = 'запчасть'
-                ending2 = 'запчасти'
-                ending3 = 'запчастей'
-                f1 = lambda a: (a % 100) // 10 != 1 and a % 10 == 1
-                f2 = lambda a: (a % 100) // 10 != 1 and a % 10 in [2, 3, 4]
-                return ending1 if f1(qty) else ending2 if f2(qty) else ending3
+                def skl(qty):
+                    ending1 = 'запчасть'
+                    ending2 = 'запчасти'
+                    ending3 = 'запчастей'
+                    f1 = lambda a: (a % 100) // 10 != 1 and a % 10 == 1
+                    f2 = lambda a: (a % 100) // 10 != 1 and a % 10 in [2, 3, 4]
+                    return ending1 if f1(qty) else ending2 if f2(qty) else ending3
 
-            await message.answer(
-                f'Найдено {len(sp_found)} {skl(len(sp_found))}. Введите еще модель для поиска ("Отмена" для возврата)',
-                reply_markup=kb_cancel)
+                await message.answer(
+                    f'Найдено {len(sp_found)} {skl(len(sp_found))}. Введите еще модель для поиска ("Отмена" для возврата)',
+                    reply_markup=kb_cancel)
 
 
 async def search_repairs(message: types.Message):
